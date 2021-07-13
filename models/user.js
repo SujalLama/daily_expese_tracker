@@ -32,9 +32,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    roleId: {
-      type: DataTypes.INTEGER
-    },
     createdAt: {
         allowNull: false,
         type: DataTypes.DATE
