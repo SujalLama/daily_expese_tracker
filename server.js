@@ -1,5 +1,5 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 // const typeDefs = require('./schema/hi');
 // const resolvers = require('./resolvers/hi');
 require('dotenv').config();
@@ -11,21 +11,33 @@ const { loadFilesSync } = require('@graphql-tools/load-files');
 const typeDefs = mergeTypeDefs(loadFilesSync(path.join(__dirname, './schema')));
 const resolvers = mergeResolvers(loadFilesSync(path.join(__dirname, './resolvers')));
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const auth = require('./middleware/auth');
+
+async function getUser (token) {
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY)
+    return decoded;
+  } catch (error) {
+    return null
+  }
+}
 
 async function startApolloServer() {
   const app = express();
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: {
-      db,
-      user: {
-        id: 1
-      }
+    context: async ({req}) => {
+      const authHeader = req.headers.authorization || '';
+      const token = authHeader.split(' ')[1];
+      const user = await getUser(token)
+  
+      return {user, db}
     }
-  });
-  await server.start();
+  })
 
+  await server.start();
   app.use(cors('*'));
   server.applyMiddleware({ app });
 

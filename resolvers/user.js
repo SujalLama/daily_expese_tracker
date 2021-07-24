@@ -2,7 +2,28 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
     Query: {
-        allUsers: (parent, args, {db}) => db.User.findAll(),
+        allUsers: async (parent, args, {db, user}) => {
+            try {
+                if(!user) return {
+                    message: "You are not allowed.",
+                    success: false,
+                    users: []
+                }
+
+            const users = await db.User.findAll();
+
+            return {
+                users,
+                message: "All users are fetched",
+                success: true
+            }
+            } catch (error) {
+                return {
+                    message: error.message,
+                    success: false
+                    }
+            }
+        },
         getUser: (parent, {id}, {db}) => db.User.findOne({where: {id}})
     },
 

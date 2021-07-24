@@ -6,6 +6,12 @@ module.exports = gql`
         email: String!,
     }
 
+    type UsersResponseMessage {
+        message: String!,
+        success: Boolean!,
+        users: [User],
+    }
+
     type ResponseMessage {
         message: String!,
         success: Boolean!,
@@ -13,7 +19,7 @@ module.exports = gql`
     }
 
     type Query {
-        allUsers: [User!]!,
+        allUsers: UsersResponseMessage,
         getUser(id: Int!): User!
     }
 
