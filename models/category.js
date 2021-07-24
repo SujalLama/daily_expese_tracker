@@ -20,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE
         }
   });
- 
+  
+  Category.associate = (models) => {
+    Category.hasMany(models.Expense, {
+      foreignKey: 'categoryId'
+    });
+  };
+
   return Category;
 };
