@@ -24,7 +24,34 @@ module.exports = {
                     }
             }
         },
-        getUser: (parent, {id}, {db}) => db.User.findOne({where: {id}})
+        getUser: async (parent, {id}, {db, user}) => {
+             try {
+                if(!user) return {
+                    message: "You are not allowed.",
+                    success: false,
+                    user: {}
+                }
+
+            const fetchedUser = await db.User.findOne({where: {id}});
+
+            if(!fetchedUser) return {
+                 message: "User doesn't exists.",
+                    success: false,
+                    user: {}
+            }
+
+            return {
+                user: fetchedUser,
+                message: "Single user is fetched",
+                success: true
+            }
+            } catch (error) {
+                return {
+                    message: error.message,
+                    success: false
+                    }
+            }
+        }
     },
 
     Mutation: {

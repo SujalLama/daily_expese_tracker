@@ -12,6 +12,12 @@ module.exports = gql`
         users: [User],
     }
 
+    type UserResponseMessage {
+        message: String!,
+        success: Boolean!,
+        user: User,
+    }
+
     type ResponseMessage {
         message: String!,
         success: Boolean!,
@@ -19,8 +25,8 @@ module.exports = gql`
     }
 
     type Query {
-        allUsers: UsersResponseMessage,
-        getUser(id: Int!): User!
+        allUsers: UsersResponseMessage!,
+        getUser(id: Int!): UserResponseMessage
     }
 
    type Mutation {

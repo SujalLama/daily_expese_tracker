@@ -1,5 +1,5 @@
 const express = require('express');
-const { ApolloServer, AuthenticationError } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 // const typeDefs = require('./schema/hi');
 // const resolvers = require('./resolvers/hi');
 require('dotenv').config();
@@ -12,7 +12,7 @@ const typeDefs = mergeTypeDefs(loadFilesSync(path.join(__dirname, './schema')));
 const resolvers = mergeResolvers(loadFilesSync(path.join(__dirname, './resolvers')));
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const auth = require('./middleware/auth');
+
 
 async function getUser (token) {
   try {
