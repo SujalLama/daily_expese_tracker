@@ -32,8 +32,10 @@ if (config.use_env_variable) {
 // });
 
 const db = {
-  User: require('./user')(sequelize, Sequelize.DataTypes)
+  User: require('./user')(sequelize, Sequelize.DataTypes),
+  Category: require('./category')(sequelize, Sequelize.DataTypes),
 }
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
