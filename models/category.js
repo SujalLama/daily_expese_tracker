@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     Category.hasMany(models.Income, {
       foreignKey: 'categoryId'
     });
+    Category.hasMany(models.Saving, {
+      foreignKey: 'categoryId'
+    });
   };
 
   return Category;

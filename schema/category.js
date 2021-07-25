@@ -5,6 +5,7 @@ module.exports = gql`
         title: String!,
         expenses: [Expense],
         incomes: [Income],
+        savings: [Saving],
     }
 
     type CategoriesResponseMessage {

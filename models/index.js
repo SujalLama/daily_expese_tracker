@@ -20,6 +20,7 @@ const db = {
   Category: require('./category')(sequelize, Sequelize.DataTypes),
   Expense: require('./expense')(sequelize, Sequelize.DataTypes),
   Income: require('./income')(sequelize, Sequelize.DataTypes),
+  Saving: require('./saving')(sequelize, Sequelize.DataTypes),
 }
 
 Object.keys(db).forEach(modelName => {
