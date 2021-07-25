@@ -1,13 +1,9 @@
+const {requiresAuth, requiresAdmin} = require("../permission");
+
 module.exports = {
     Query: {
-        allCategories: async (parent, args, {db, user}) => {
+        allCategories: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    categories: []
-                }
-
             const categories = await db.Category.findAll({include: [db.Expense, db.Income]});
 
             return {
@@ -21,8 +17,8 @@ module.exports = {
                     success: false
                     }
             }
-        },
-        getCategory: async (parent, {id}, {db, user}) => {
+        }),
+        getCategory: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
              try {
                 if(!user) return {
                     message: "You are not allowed.",
@@ -49,19 +45,12 @@ module.exports = {
                     success: false
                     }
             }
-        }
+        })
     },
 
     Mutation: {
-        createCategory: async (parent, {title}, {db, user}) => {
+        createCategory: requiresAuth.createResolver(async (parent, {title}, {db, user}) => {
             try {
-                // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    category: {}
-                }
-
                 const category = await db.Category.create({title})
 
                 return {
@@ -77,15 +66,9 @@ module.exports = {
                     category: ""
                     }
             }
-        },
-        updateCategory: async (parent, {id, title}, {db, user}) => {
+        }),
+        updateCategory: requiresAdmin.createResolver(async (parent, {id, title}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
-
                 const category = await db.Category.findOne({where: {id}})
 
                 if(!category) return {
@@ -106,15 +89,9 @@ module.exports = {
                     success: false,
                     }
             }
-        },
-        deleteCategory: async (parent, {id}, {db, user}) => {
+        }),
+        deleteCategory: requiresAdmin.createResolver(async (parent, {id}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
-
                 const category = await db.Category.findOne({where: {id}})
 
                 if(!category) return {
@@ -135,6 +112,6 @@ module.exports = {
                     success: false,
                     }
             }
-        }
+        })
     }
 }

@@ -1,14 +1,10 @@
+const {requiresAuth} = require("../permission");
+
 module.exports = {
     Query: {
-        allIncomes: async (parent, args, {db, user}) => {
+        allIncomes: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
                 const {Income, Category, User} = db;
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    Incomes: []
-                }
-
             const incomes = await Income.findAll({include: [Category, User]});
             return {
                 incomes,
@@ -21,15 +17,9 @@ module.exports = {
                     success: false
                     }
             }
-        },
-        getIncome: async (parent, {id}, {db, user}) => {
+        }),
+        getIncome: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
              try {
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    Income: {}
-                }
-
             const income = await db.Income.findOne({where: {id}, include: [db.Category, db.User]});
 
             if(!income) return {
@@ -49,20 +39,13 @@ module.exports = {
                     success: false
                     }
             }
-        }
+        })
     },
 
     Mutation: {
-        createIncome: async (parent, args, {db, user}) => {
+        createIncome: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
-                // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    income: {}
-                }
-
-                const income = await db.Income.create({...args, creator: user})
+                const income = await db.Income.create({...args, creator: user.id})
 
                 return {
                     message: 'Income is created',
@@ -77,15 +60,9 @@ module.exports = {
                     income: {}
                     }
             }
-        },
-        updateIncome: async (parent, {id, name, description, amount, date, categoryId}, {db, user}) => {
+        }),
+        updateIncome: requiresAuth.createResolver(async (parent, {id, name, description, amount, date, categoryId}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
-
                 const income = await db.Income.findOne({where: {id}})
 
                 if(!income) return {
@@ -106,15 +83,9 @@ module.exports = {
                     success: false,
                     }
             }
-        },
-        deleteIncome: async (parent, {id}, {db, user}) => {
+        }),
+        deleteIncome: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
-
                 const income = await db.Income.findOne({where: {id}})
 
                 if(!income) return {
@@ -135,6 +106,6 @@ module.exports = {
                     success: false,
                     }
             }
-        }
+        })
     }
 }

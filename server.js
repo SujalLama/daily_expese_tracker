@@ -17,7 +17,8 @@ const jwt = require('jsonwebtoken');
 async function getUser (token) {
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY)
-    return decoded;
+    const user = await db.User.findOne({where: {id: decoded}})
+    return user;
   } catch (error) {
     return null
   }

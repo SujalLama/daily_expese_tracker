@@ -1,14 +1,10 @@
+const {requiresAuth} = require("../permission");
+
 module.exports = {
     Query: {
-        allSavings: async (parent, args, {db, user}) => {
+        allSavings: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
                 const {Saving, Category, User} = db;
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    Savings: []
-                }
-
             const savings = await Saving.findAll({include: [Category]});
             return {
                 savings,
@@ -21,15 +17,9 @@ module.exports = {
                     success: false
                     }
             }
-        },
-        getSaving: async (parent, {id}, {db, user}) => {
+        }),
+        getSaving: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
              try {
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    saving: {}
-                }
-
             const saving = await db.Saving.findOne({where: {id}, include: [db.Category, db.User]});
 
             if(!saving) return {
@@ -48,20 +38,13 @@ module.exports = {
                     success: false
                     }
             }
-        }
+        })
     },
 
     Mutation: {
-        createSaving: async (parent, args, {db, user}) => {
+        createSaving: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
-                // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    Saving: {}
-                }
-
-                const saving = await db.Saving.create({...args, creator: user})
+                const saving = await db.Saving.create({...args, creator: user.id})
 
                 return {
                     message: 'Saving is created',
@@ -76,15 +59,9 @@ module.exports = {
                     Saving: {}
                     }
             }
-        },
-        updateSaving: async (parent, {id, amount, date, categoryId}, {db, user}) => {
+        }),
+        updateSaving: requiresAuth.createResolver(async (parent, {id, amount, date, categoryId}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
-
                 const saving = await db.Saving.findOne({where: {id}})
 
                 if(!saving) return {
@@ -105,14 +82,9 @@ module.exports = {
                     success: false,
                     }
             }
-        },
-        deleteSaving: async (parent, {id}, {db, user}) => {
+        }),
+        deleteSaving: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
 
                 const saving = await db.Saving.findOne({where: {id}})
 
@@ -134,6 +106,6 @@ module.exports = {
                     success: false,
                     }
             }
-        }
+        })
     }
 }

@@ -1,14 +1,9 @@
+const {requiresAuth} = require('../permission');
 module.exports = {
     Query: {
-        allExpenses: async (parent, args, {db, user}) => {
+        allExpenses: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
                 const {Expense, Category, User} = db;
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    expenses: []
-                }
-
             const expenses = await Expense.findAll({include: Category, User});
             return {
                 expenses,
@@ -21,15 +16,9 @@ module.exports = {
                     success: false
                     }
             }
-        },
-        getExpense: async (parent, {id}, {db, user}) => {
+        }),
+        getExpense: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
              try {
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    expense: {}
-                }
-
             const expense = await db.Expense.findOne({where: {id}, include: [db.Category, db.User]});
 
             if(!expense) return {
@@ -49,21 +38,13 @@ module.exports = {
                     success: false
                     }
             }
-        }
+        })
     },
 
     Mutation: {
-        createExpense: async (parent, args, {db, user}) => {
+        createExpense: requiresAuth.createResolver(async (parent, args, {db, user}) => {
             try {
-                // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                    Expense: {}
-                }
-
-                const expense = await db.Expense.create({...args, creator: user})
-
+                const expense = await db.Expense.create({...args, creator: user.id})
                 return {
                     message: 'Expense is created',
                     success: true,
@@ -77,15 +58,9 @@ module.exports = {
                     expense: {}
                     }
             }
-        },
-        updateExpense: async (parent, {id, name, description, amount, date, categoryId}, {db, user}) => {
+        }),
+        updateExpense: requiresAuth.createResolver(async (parent, {id, name, description, amount, date, categoryId}, {db, user}) => {
             try {
-                 // checking authorization
-                if(!user) return {
-                    message: "You are not allowed.",
-                    success: false,
-                }
-
                 const expense = await db.Expense.findOne({where: {id}})
 
                 if(!expense) return {
@@ -106,8 +81,8 @@ module.exports = {
                     success: false,
                     }
             }
-        },
-        deleteExpense: async (parent, {id}, {db, user}) => {
+        }),
+        deleteExpense: requiresAuth.createResolver(async (parent, {id}, {db, user}) => {
             try {
                  // checking authorization
                 if(!user) return {
@@ -135,6 +110,6 @@ module.exports = {
                     success: false,
                     }
             }
-        }
+        })
     }
 }
