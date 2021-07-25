@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      creator: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
   }, {timestamps: false});
  
@@ -32,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
     Income.belongsTo(models.Category, {
       foreignKey: 'categoryId'
     });
+    Income.belongsTo(models.User, {
+      foreignKey: 'creator'
+    })
   };
 
   return Income;

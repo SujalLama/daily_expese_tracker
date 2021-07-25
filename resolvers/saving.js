@@ -2,14 +2,14 @@ module.exports = {
     Query: {
         allSavings: async (parent, args, {db, user}) => {
             try {
-                const {Saving, Category} = db;
+                const {Saving, Category, User} = db;
                 if(!user) return {
                     message: "You are not allowed.",
                     success: false,
                     Savings: []
                 }
 
-            const savings = await Saving.findAll({include: Category});
+            const savings = await Saving.findAll({include: [Category]});
             return {
                 savings,
                 message: "All Savings are fetched",
@@ -30,7 +30,7 @@ module.exports = {
                     saving: {}
                 }
 
-            const saving = await db.Saving.findOne({where: {id}, include: [db.Category]});
+            const saving = await db.Saving.findOne({where: {id}, include: [db.Category, db.User]});
 
             if(!saving) return {
                 message: "Saving doesn't exists.",
@@ -61,7 +61,7 @@ module.exports = {
                     Saving: {}
                 }
 
-                const saving = await db.Saving.create(args)
+                const saving = await db.Saving.create({...args, creator: user})
 
                 return {
                     message: 'Saving is created',

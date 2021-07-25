@@ -2,14 +2,14 @@ module.exports = {
     Query: {
         allIncomes: async (parent, args, {db, user}) => {
             try {
-                const {Income, Category} = db;
+                const {Income, Category, User} = db;
                 if(!user) return {
                     message: "You are not allowed.",
                     success: false,
                     Incomes: []
                 }
 
-            const incomes = await Income.findAll({include: Category});
+            const incomes = await Income.findAll({include: [Category, User]});
             return {
                 incomes,
                 message: "All Incomes are fetched",
@@ -30,7 +30,7 @@ module.exports = {
                     Income: {}
                 }
 
-            const income = await db.Income.findOne({where: {id}, include: [db.Category]});
+            const income = await db.Income.findOne({where: {id}, include: [db.Category, db.User]});
 
             if(!income) return {
                 message: "Income doesn't exists.",
@@ -62,7 +62,7 @@ module.exports = {
                     income: {}
                 }
 
-                const income = await db.Income.create(args)
+                const income = await db.Income.create({...args, creator: user})
 
                 return {
                     message: 'Income is created',

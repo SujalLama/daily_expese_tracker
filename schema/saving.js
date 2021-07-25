@@ -6,6 +6,8 @@ module.exports = gql`
         amount: Float!,
         date: String!,
         categoryId: Int!,
+        creator: Int!,
+        owner: User,
         category: Category!
     }
 

@@ -53,25 +53,18 @@ module.exports = (sequelize, DataTypes) => {
     return newtoken;
   }
 
-//   User.associate = (models) => {
-//     User.hasOne(models.Parent, {
-//       foreignKey: 'userId'
-//     });
+  User.associate = (models) => {
+    User.hasMany(models.Expense, {
+      foreignKey: 'creator'
+    });
+    User.hasMany(models.Income, {
+      foreignKey: 'creator'
+    });
+    User.hasMany(models.Saving, {
+      foreignKey: 'creator'
+    });
 
-//     User.hasOne(models.Teacher, {
-//       foreignKey: 'userId'
-//     });
-    
-//     User.belongsTo(models.Role, {
-//       foreignKey: 'roleId'
-//     });
-//     User.hasOne(models.Student, {
-//       foreignKey: 'userId'
-//     })
-//     // User.belongsToMany(models.Team, {
-//     //   through: 'members'
-//     // })
-//   };
+  };
 
   return User;
 };

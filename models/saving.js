@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      creator: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       }
   }, {timestamps: false});
  
@@ -25,6 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     Saving.belongsTo(models.Category, {
       foreignKey: 'categoryId'
     });
+    Saving.belongsTo(models.User, {
+      foreignKey: 'creator'
+    })
   };
 
   return Saving;
