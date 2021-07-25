@@ -78,7 +78,7 @@ module.exports = {
                     }
             }
         },
-        updateExpense: async (parent, {id, newExpense: {...rest}}, {db, user}) => {
+        updateExpense: async (parent, {id, name, description, amount, date, categoryId}, {db, user}) => {
             try {
                  // checking authorization
                 if(!user) return {
@@ -93,7 +93,7 @@ module.exports = {
                     success: false,
                 }
 
-                await db.Expense.update(newExpense, {where: {id}})
+                await db.Expense.update({name, description, amount, date, categoryId}, {where: {id}})
 
                 return {
                     message: "expense is successfully updated.",
