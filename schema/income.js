@@ -1,7 +1,7 @@
 const {gql} = require('apollo-server-express');
 
 module.exports = gql`
-    type Expense {
+    type Income {
         id: Int
         name: String!,
         description: String,
@@ -11,22 +11,22 @@ module.exports = gql`
         category: Category!
     }
 
-    type ExpensesResponseMessage {
+    type IncomesResponseMessage {
         message: String!,
         success: Boolean!,
-        expenses: [Expense],
+        incomes: [Income],
     }
 
-    type ExpenseResponseMessage {
+    type IncomeResponseMessage {
         message: String!,
         success: Boolean!,
-        expense: Expense,
+        income: Income,
     }
 
     type CreateResponseMessage {
         message: String!,
         success: Boolean!,
-        expense: Expense,
+        income: Income,
     }
 
     type ResponseMessage {
@@ -35,13 +35,13 @@ module.exports = gql`
     }
 
     type Query {
-        allExpenses: ExpensesResponseMessage!,
-        getExpense(id: Int!): ExpenseResponseMessage
+        allIncomes: IncomesResponseMessage!,
+        getIncome(id: Int!): IncomeResponseMessage
     }
 
    type Mutation {
-        createExpense(name: String!, description: String, amount: Float!, date: String!, categoryId: Int! ): CreateResponseMessage!,
-        updateExpense(id: Int!, name: String, description: String, amount: Float, date: String, categoryId: Int ): ResponseMessage!,
-        deleteExpense(id: Int!): ResponseMessage!,
+        createIncome(name: String!, description: String, amount: Float!, date: String!, categoryId: Int! ): CreateResponseMessage!,
+        updateIncome(id: Int!, name: String, description: String, amount: Float, date: String, categoryId: Int ): ResponseMessage!,
+        deleteIncome(id: Int!): ResponseMessage!,
     }
 `

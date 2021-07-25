@@ -1,18 +1,18 @@
 module.exports = {
     Query: {
-        allCategories: async (parent, args, {db, user}) => {
+        allIncomes: async (parent, args, {db, user}) => {
             try {
+                const {Income, Category} = db;
                 if(!user) return {
                     message: "You are not allowed.",
                     success: false,
-                    categories: []
+                    Incomes: []
                 }
 
-            const categories = await db.Category.findAll({include: [db.Expense, db.Income]});
-
+            const incomes = await Income.findAll({include: Category});
             return {
-                categories,
-                message: "All categories are fetched",
+                incomes,
+                message: "All Incomes are fetched",
                 success: true
             }
             } catch (error) {
@@ -22,25 +22,25 @@ module.exports = {
                     }
             }
         },
-        getCategory: async (parent, {id}, {db, user}) => {
+        getIncome: async (parent, {id}, {db, user}) => {
              try {
                 if(!user) return {
                     message: "You are not allowed.",
                     success: false,
-                    category: {}
+                    Income: {}
                 }
 
-            const category = await db.Category.findOne({where: {id}, include: [db.Expense, db.Income]});
+            const income = await db.Income.findOne({where: {id}, include: [db.Category]});
 
-            if(!category) return {
-                message: "Category doesn't exists.",
+            if(!income) return {
+                message: "Income doesn't exists.",
                 success: false,
-                category: {}
+                income: {}
             }
 
             return {
-                category,
-                message: "Single category is fetched",
+                income,
+                message: "Single Income is fetched",
                 success: true
             }
             } catch (error) {
@@ -53,32 +53,32 @@ module.exports = {
     },
 
     Mutation: {
-        createCategory: async (parent, {title}, {db, user}) => {
+        createIncome: async (parent, args, {db, user}) => {
             try {
                 // checking authorization
                 if(!user) return {
                     message: "You are not allowed.",
                     success: false,
-                    category: {}
+                    income: {}
                 }
 
-                const category = await db.Category.create({title})
+                const income = await db.Income.create(args)
 
                 return {
-                    message: 'Category is created',
+                    message: 'Income is created',
                     success: true,
-                    category
+                    income
                 }
 
             } catch (error) {
                 return {
                     message: error.message,
                     success: false,
-                    category: ""
+                    income: {}
                     }
             }
         },
-        updateCategory: async (parent, {id, title}, {db, user}) => {
+        updateIncome: async (parent, {id, name, description, amount, date, categoryId}, {db, user}) => {
             try {
                  // checking authorization
                 if(!user) return {
@@ -86,17 +86,17 @@ module.exports = {
                     success: false,
                 }
 
-                const category = await db.Category.findOne({where: {id}})
+                const income = await db.Income.findOne({where: {id}})
 
-                if(!category) return {
-                    message: "Category doesn't exist.",
+                if(!income) return {
+                    message: "Income doesn't exist.",
                     success: false,
                 }
 
-                await db.Category.update({title}, {where: {id}})
+                await db.Income.update({name, description, amount, date, categoryId}, {where: {id}})
 
                 return {
-                    message: "Category is successfully updated.",
+                    message: "Income is successfully updated.",
                     success: true,
                 }
 
@@ -107,7 +107,7 @@ module.exports = {
                     }
             }
         },
-        deleteCategory: async (parent, {id}, {db, user}) => {
+        deleteIncome: async (parent, {id}, {db, user}) => {
             try {
                  // checking authorization
                 if(!user) return {
@@ -115,17 +115,17 @@ module.exports = {
                     success: false,
                 }
 
-                const category = await db.Category.findOne({where: {id}})
+                const income = await db.Income.findOne({where: {id}})
 
-                if(!category) return {
-                    message: "Category doesn't exist.",
+                if(!income) return {
+                    message: "Income doesn't exist.",
                     success: false,
                 }
 
-                await db.Category.destroy({where: {id}})
+                await db.Income.destroy({where: {id}})
 
                 return {
-                    message: "Category is successfully deleted.",
+                    message: "Income is successfully deleted.",
                     success: true,
                 }
 

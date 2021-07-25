@@ -3,7 +3,8 @@ module.exports = gql`
     type Category {
         id: Int
         title: String!,
-        expenses: [Expense]
+        expenses: [Expense],
+        incomes: [Income],
     }
 
     type CategoriesResponseMessage {
